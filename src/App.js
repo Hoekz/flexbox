@@ -1,23 +1,24 @@
-import logo from './logo.svg';
+import { useReducer } from 'react';
+import { flexReducer, initialFlex, actions } from './flex';
+import { Editor } from './Editor';
+import { FlexBox } from './FlexBox';
 import './App.css';
 
 function App() {
+  const [{ selected, selectedPath, root }, update] = useReducer(flexReducer, initialFlex);
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+    <div className="app">
+      <Editor
+        path={selectedPath}
+        box={selected}
+        addChild={() => update({ type: actions.ADD_CHILD })}
+        setProp={(prop, value) => update({ type: actions.SET_PROP, prop, value })}
+        select={(path) => update({ type: actions.SELECT, path })}
+        remove={() => update({ type: actions.REMOVE })}
+        clone={() => update({ type: actions.CLONE })}
+      />
+      <FlexBox {...root} select={(path) => update({ type: actions.SELECT, path })} />
     </div>
   );
 }
